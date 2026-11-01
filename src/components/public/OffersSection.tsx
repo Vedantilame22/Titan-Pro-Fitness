@@ -19,7 +19,7 @@ export const OffersSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
           badgeText="Limited Time Promo"
-          badgeVariant="amber"
+          badgeVariant="flame"
           title="Exclusive Special"
           highlightWord="Discounts"
           subtitle="Grab seasonal promo codes to lock in your membership rate before enrollment caps out."
@@ -29,7 +29,7 @@ export const OffersSection: React.FC = () => {
           {INITIAL_OFFERS.map((offer) => (
             <Card
               key={offer.id}
-              className="relative overflow-hidden border border-dashed border-emerald-500/40 dark:bg-[#0c0e14] p-8 rounded-3xl flex flex-col justify-between"
+              className="relative overflow-hidden border border-dashed border-red-500/40 bg-[#0c0e14] p-8 rounded-3xl flex flex-col justify-between shadow-xl shadow-red-500/5"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -43,47 +43,42 @@ export const OffersSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-baseline gap-2.5 mb-2.5">
-                  <span className="font-heading text-3xl font-extrabold text-emerald-500">
+                  <span className="font-heading text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">
                     {offer.discountPercentage}% OFF
                   </span>
-                  <span className="font-heading text-lg font-bold text-slate-900 dark:text-white">
+                  <span className="font-heading text-lg font-bold text-white">
                     {offer.title}
                   </span>
                 </div>
 
-                <p className="text-xs font-normal text-slate-500 dark:text-slate-400 leading-relaxed mb-8">
+                <p className="text-xs font-normal text-slate-400 leading-relaxed mb-8">
                   {offer.description}
                 </p>
               </div>
 
               {/* Coupon Code Strip */}
-              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-black/50 border border-slate-800 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-normal text-slate-400 block tracking-wider">
-                    Coupon Code
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                    Discount Voucher
                   </span>
-                  <span className="font-mono text-base font-bold text-slate-900 dark:text-emerald-400 tracking-wider">
+                  <span className="font-mono text-sm font-extrabold text-orange-400 tracking-wider">
                     {offer.code}
                   </span>
                 </div>
-
                 <button
                   onClick={() => handleCopy(offer.code)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
-                    copiedCode === offer.code
-                      ? 'bg-emerald-500 text-black'
-                      : 'bg-slate-200/80 dark:bg-slate-800 hover:bg-emerald-500 hover:text-black text-slate-700 dark:text-slate-200'
-                  }`}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   {copiedCode === offer.code ? (
                     <>
-                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                      Copied!
+                      <Check className="w-3.5 h-3.5 text-orange-400" />
+                      <span>Copied!</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-3.5 h-3.5" />
-                      Copy Code
+                      <span>Copy</span>
                     </>
                   )}
                 </button>

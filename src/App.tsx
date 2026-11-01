@@ -17,6 +17,8 @@ import { WorkoutSplitsSection } from './components/member/WorkoutSplitsSection';
 import { ExerciseTutorialsModal } from './components/member/ExerciseTutorialsModal';
 import { MemberDashboard } from './components/member/MemberDashboard';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { AiWorkoutPlannerModal } from './components/manus/AiWorkoutPlannerModal';
+import { AiMacroNutritionModal } from './components/manus/AiMacroNutritionModal';
 import { Modal } from './components/common/Modal';
 import { Button } from './components/common/Button';
 import { triggerConfetti } from './utils/confetti';
@@ -30,6 +32,8 @@ export const App: React.FC = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
   const [checkoutPlan, setCheckoutPlan] = useState<MembershipPlan | null>(null);
+  const [isAiPlannerOpen, setIsAiPlannerOpen] = useState(false);
+  const [isNutritionOpen, setIsNutritionOpen] = useState(false);
 
   const handleAddReview = (newReview: Omit<Review, 'id' | 'date'>) => {
     const rev: Review = {
@@ -47,28 +51,30 @@ export const App: React.FC = () => {
   const handleConfirmPlan = () => {
     if (!checkoutPlan) return;
     triggerConfetti();
-    alert(`🎉 Congratulations! You have enrolled in the ${checkoutPlan.title} plan! Welcome to Titan Pro Fitness.`);
+    alert(`🔥 Congratulations! You have enrolled in the ${checkoutPlan.title} plan! Welcome to Titan Pro Gym.`);
     setCheckoutPlan(null);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafc] dark:bg-[#08090d] text-slate-900 dark:text-slate-100 transition-colors">
-      {/* Top Navigation Bar */}
+    <div className="min-h-screen flex flex-col bg-[#08090d] text-slate-100 selection:bg-red-500 selection:text-white">
+      {/* Top Navigation Bar - Clean, focused, uncrowded */}
       <Navbar
-        onOpenFeedback={() => setIsFeedbackOpen(true)}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOpenAiPlanner={() => setIsAiPlannerOpen(true)}
       />
 
-      {/* Main Content Area with generous, elegant breathing room */}
+      {/* Main Content Area */}
       <main className="flex-1 pb-32">
         {activeTab === 'home' && (
           <>
             <HeroSection
               onExplorePlans={() => setActiveTab('plans')}
               onExploreEquipments={() => setActiveTab('equipments')}
+              onOpenAiPlanner={() => setIsAiPlannerOpen(true)}
+              onOpenNutrition={() => setIsNutritionOpen(true)}
             />
-            <OverviewSection />
+            <OverviewSection onExplorePlans={() => setActiveTab('plans')} />
             <EquipmentsSection />
             <PlansSection onSelectPlan={(plan) => setCheckoutPlan(plan)} />
             <TimingsSection />
@@ -155,60 +161,73 @@ export const App: React.FC = () => {
         initialExerciseName={selectedExercise || undefined}
       />
 
-      {/* Plan Join Checkout Modal */}
-      {checkoutPlan && (
-        <Modal
-          isOpen={Boolean(checkoutPlan)}
-          onClose={() => setCheckoutPlan(null)}
-          title={`Join ${checkoutPlan.title}`}
-          subtitle="Complete your enrollment with zero registration fees."
-          maxWidth="md"
-        >
+      {/* Manus AI Workout Protocol Modal */}
+      <AiWorkoutPlannerModal
+        isOpen={isAiPlannerOpen}
+        onClose={() => setIsAiPlannerOpen(false)}
+        onApplyPlan={() => setActiveTab('workouts')}
+      />
+
+      {/* Manus AI Precision Macro Nutrition Modal */}
+      <AiMacroNutritionModal
+        isOpen={isNutritionOpen}
+        onClose={() => setIsNutritionOpen(false)}
+      />
+
+      {/* Plan Join Checkout Modal with Motion Spring */}
+      <Modal
+        isOpen={Boolean(checkoutPlan)}
+        onClose={() => setCheckoutPlan(null)}
+        title={checkoutPlan ? `Join ${checkoutPlan.title}` : 'Join Plan'}
+        subtitle="Complete your athlete enrollment with zero registration fees."
+        maxWidth="md"
+      >
+        {checkoutPlan && (
           <div className="space-y-4">
-            <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
+            <div className="p-5 rounded-2xl bg-red-500/15 border border-red-500/30">
               <div className="flex items-baseline justify-between mb-2">
-                <span className="font-heading font-medium text-sm text-slate-900 dark:text-white">
+                <span className="font-heading font-bold text-sm text-white">
                   Total Membership Fee
                 </span>
-                <span className="font-heading text-2xl font-bold text-emerald-500">
+                <span className="font-heading text-3xl font-black text-red-400">
                   ₹{checkoutPlan.price.toLocaleString('en-IN')}
                 </span>
               </div>
-              <p className="text-xs font-normal text-slate-500 dark:text-slate-400">
-                Duration: {checkoutPlan.durationMonths} Months ({checkoutPlan.durationMonths * 30} Days full gym access)
+              <p className="text-xs font-normal text-slate-400">
+                Duration: {checkoutPlan.durationMonths} Months ({checkoutPlan.durationMonths * 30} Days unlimited gym access)
               </p>
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Payment Options (Zero Convenience Fee):
               </span>
-              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-normal">
+              <div className="p-3.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs font-medium">
                 <span>Direct UPI / QR Code at Reception</span>
-                <span className="text-emerald-500 font-medium">₹0 Extra</span>
+                <span className="text-red-400 font-bold">₹0 Extra</span>
               </div>
-              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-normal">
+              <div className="p-3.5 rounded-xl border border-slate-800 flex items-center justify-between text-xs font-medium">
                 <span>Credit / Debit Card / Net Banking</span>
-                <span className="text-emerald-500 font-medium">Instant Activation</span>
+                <span className="text-red-400 font-bold">Instant Activation</span>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-xs font-normal text-slate-500 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+            <div className="p-3.5 rounded-xl bg-slate-900 text-xs text-slate-400 flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-orange-400 flex-shrink-0" />
               <span>Full 100% money-back guarantee if cancelled within 48 hours.</span>
             </div>
 
             <Button
-              variant="primary"
+              variant="glow"
               size="lg"
               onClick={handleConfirmPlan}
-              className="w-full"
+              className="w-full mt-2"
             >
               Confirm Enrollment & Activate Pass
             </Button>
           </div>
-        </Modal>
-      )}
+        )}
+      </Modal>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Play,
   Pause,
@@ -9,7 +10,6 @@ import {
   Radio,
   ChevronDown,
   ChevronUp,
-  Sparkles,
 } from 'lucide-react';
 import { useAudio } from '../../context/AudioContext';
 import { Badge } from '../common/Badge';
@@ -34,136 +34,152 @@ export const FloatingAudioPlayer: React.FC = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-4 sm:px-6 pb-4 pointer-events-none">
       <div className="max-w-3xl mx-auto pointer-events-auto">
-        {/* Playlist Drawer (if opened) */}
-        {showPlaylist && (
-          <div className="mb-2 p-4 bg-slate-900/95 dark:bg-[#0c0e14]/95 border border-emerald-500/25 rounded-3xl shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-bottom-2">
-            <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-800 text-xs text-slate-400 font-normal">
-              <span className="font-semibold text-white flex items-center gap-1.5">
-                <Radio className="w-3.5 h-3.5 text-emerald-400" />
-                Ad-Free Workout Stations ({tracks.length})
-              </span>
-              <button
-                onClick={() => setShowPlaylist(false)}
-                className="text-slate-400 hover:text-white font-normal"
-              >
-                Close
-              </button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-              {tracks.map((t, idx) => (
+        {/* Animated Playlist Drawer */}
+        <AnimatePresence>
+          {showPlaylist && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.96 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              className="mb-3 p-5 bg-[#0c0e16]/95 border border-red-500/30 rounded-3xl shadow-2xl backdrop-blur-2xl"
+            >
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-xs text-slate-400">
+                <span className="font-bold text-white flex items-center gap-2">
+                  <Radio className="w-4 h-4 text-red-400" />
+                  Titan Beats Station Lineup ({tracks.length})
+                </span>
                 <button
-                  key={t.id}
-                  onClick={() => {
-                    playTrack(idx);
-                    setShowPlaylist(false);
-                  }}
-                  className={`flex items-center justify-between p-2.5 rounded-2xl text-left text-xs transition-all ${
-                    t.id === currentTrack.id
-                      ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-300'
-                      : 'hover:bg-slate-800/60 text-slate-300'
-                  }`}
+                  onClick={() => setShowPlaylist(false)}
+                  className="text-slate-400 hover:text-white font-medium text-xs px-2 py-1 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
                 >
-                  <div className="truncate mr-2">
-                    <p className="font-medium truncate">{t.title}</p>
-                    <p className="text-[10px] font-normal text-slate-400">{t.artist}</p>
-                  </div>
-                  <Badge variant="neon" className="text-[10px] py-0 px-2 flex-shrink-0">
-                    {t.genre}
-                  </Badge>
+                  Close
                 </button>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-52 overflow-y-auto pr-1">
+                {tracks.map((t, idx) => (
+                  <motion.button
+                    key={t.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      playTrack(idx);
+                      setShowPlaylist(false);
+                    }}
+                    className={`flex items-center justify-between p-3 rounded-2xl text-left text-xs transition-all cursor-pointer ${
+                      t.id === currentTrack.id
+                        ? 'bg-red-500/20 border border-red-500/40 text-red-300 font-semibold'
+                        : 'hover:bg-slate-800/70 text-slate-300 border border-transparent'
+                    }`}
+                  >
+                    <div className="truncate mr-2">
+                      <p className="font-semibold truncate">{t.title}</p>
+                      <p className="text-[10px] text-slate-400">{t.artist}</p>
+                    </div>
+                    <Badge variant="flame" className="text-[10px] py-0.5 px-2 flex-shrink-0">
+                      {t.genre}
+                    </Badge>
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Floating Bar Container */}
-        <div className="relative bg-slate-900/95 dark:bg-[#0a0b10]/95 text-white border border-slate-700/60 dark:border-slate-800/80 rounded-full px-4 sm:px-6 py-2.5 shadow-2xl backdrop-blur-xl flex items-center justify-between gap-4">
-          {/* Left: Track Info & Waveform */}
+        <motion.div
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="relative bg-[#080a10]/95 text-white border border-slate-800 rounded-full px-4 sm:px-6 py-2.5 shadow-2xl shadow-red-500/10 backdrop-blur-2xl flex items-center justify-between gap-4"
+        >
+          {/* Left: Station Trigger & Track Info */}
           <div className="flex items-center gap-3">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.92 }}
               onClick={() => setShowPlaylist((prev) => !prev)}
-              className="p-2 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 transition-all flex-shrink-0"
-              title="Choose Station"
+              className="p-2.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 hover:bg-red-500/25 transition-all flex-shrink-0 cursor-pointer"
+              title="Stations Menu"
             >
               <Radio className="w-4 h-4" />
-            </button>
+            </motion.button>
 
-            <div className="text-left max-w-[150px] sm:max-w-[220px]">
-              <p className="text-xs sm:text-sm font-medium text-white truncate">
+            <div className="text-left max-w-[130px] sm:max-w-[220px]">
+              <p className="text-xs sm:text-sm font-bold text-white truncate">
                 {currentTrack.title}
               </p>
-              <div className="flex items-center gap-2 text-[10px] font-normal text-slate-400">
+              <div className="flex items-center gap-2 text-[10px] font-medium text-slate-400">
                 <span className="truncate">{currentTrack.artist}</span>
                 <span>•</span>
-                <span className="text-emerald-400 font-medium">{currentTrack.genre}</span>
+                <span className="text-orange-400 font-bold">{currentTrack.genre}</span>
               </div>
             </div>
 
-            {/* Sound Wave Animation */}
-            <div className="hidden sm:flex items-end gap-0.5 h-3.5 px-1">
-              <span
-                className={`w-0.5 bg-emerald-400 rounded-full transition-all ${
-                  isPlaying ? 'animate-sound-wave' : 'h-1'
-                }`}
-                style={{ animationDelay: '0ms' }}
-              />
-              <span
-                className={`w-0.5 bg-emerald-400 rounded-full transition-all ${
-                  isPlaying ? 'animate-sound-wave' : 'h-2'
-                }`}
-                style={{ animationDelay: '200ms' }}
-              />
-              <span
-                className={`w-0.5 bg-emerald-400 rounded-full transition-all ${
-                  isPlaying ? 'animate-sound-wave' : 'h-1'
-                }`}
-                style={{ animationDelay: '400ms' }}
-              />
-            </div>
+            {/* Bouncing Sound Wave Equalizer in Crimson/Flame */}
+            {isPlaying && (
+              <div className="hidden sm:flex items-end gap-1 h-5 px-2">
+                {[12, 18, 8, 22, 14].map((h, i) => (
+                  <motion.span
+                    key={i}
+                    animate={{ height: [4, h, 6] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 0.6 + i * 0.15,
+                      repeatType: 'reverse',
+                    }}
+                    className="w-1 bg-gradient-to-t from-red-500 to-orange-400 rounded-full"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Center: Playback Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={prevTrack}
-              className="p-1.5 text-slate-400 hover:text-white transition-colors"
+              className="p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="Previous Track"
             >
               <SkipBack className="w-4 h-4" />
-            </button>
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.12 }}
+              whileTap={{ scale: 0.92 }}
               onClick={togglePlay}
-              className={`p-2.5 rounded-full transition-all transform active:scale-95 ${
-                isPlaying
-                  ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/30'
-                  : 'bg-white text-slate-900 hover:bg-emerald-400 hover:text-black'
-              }`}
-              title={isPlaying ? 'Pause' : 'Play Workout Beats'}
+              className="p-3 bg-gradient-to-tr from-red-600 via-rose-600 to-orange-500 text-white rounded-full font-bold shadow-lg shadow-red-600/35 transition-all cursor-pointer"
+              title={isPlaying ? 'Pause' : 'Play'}
             >
-              {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
-            </button>
+              {isPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white ml-0.5" />}
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={nextTrack}
-              className="p-1.5 text-slate-400 hover:text-white transition-colors"
+              className="p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
               title="Next Track"
             >
               <SkipForward className="w-4 h-4" />
-            </button>
+            </motion.button>
           </div>
 
-          {/* Right: Volume & Station Selector */}
-          <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
+          {/* Right: Volume & Drawer Toggle */}
+          <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={toggleMute}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-colors p-1 cursor-pointer"
               >
                 {isMuted || volume === 0 ? (
-                  <VolumeX className="w-3.5 h-3.5 text-red-400" />
+                  <VolumeX className="w-4 h-4 text-red-400" />
                 ) : (
-                  <Volume2 className="w-3.5 h-3.5" />
+                  <Volume2 className="w-4 h-4" />
                 )}
               </button>
               <input
@@ -173,20 +189,18 @@ export const FloatingAudioPlayer: React.FC = () => {
                 step="0.05"
                 value={isMuted ? 0 : volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="w-14 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                className="w-16 h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-red-500"
               />
             </div>
 
             <button
               onClick={() => setShowPlaylist((prev) => !prev)}
-              className="px-3 py-1 text-xs font-normal rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700/80 flex items-center gap-1 text-slate-300"
+              className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
             >
-              <Sparkles className="w-3 h-3 text-amber-400" />
-              <span>Stations</span>
-              {showPlaylist ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+              {showPlaylist ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

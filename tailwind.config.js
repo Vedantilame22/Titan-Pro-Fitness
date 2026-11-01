@@ -9,11 +9,12 @@ export default {
     extend: {
       colors: {
         gym: {
-          dark: '#0A0B0E',
-          card: '#12141A',
-          cardBorder: '#1E222D',
-          neon: '#10B981', // Electric Emerald Green
-          neonHover: '#059669',
+          dark: '#08090D',
+          card: '#10121A',
+          cardBorder: '#1F2432',
+          neon: '#FF334B', // Electric Athletic Crimson
+          neonHover: '#E0243B',
+          flame: '#FF5722', // Intense Blaze Orange
           amber: '#F59E0B',
           accent: '#06B6D4'
         }

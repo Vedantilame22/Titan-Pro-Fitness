@@ -3,7 +3,7 @@ import { cn } from '../../utils/cn';
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'neon' | 'amber' | 'cyan' | 'red' | 'slate';
+  variant?: 'neon' | 'amber' | 'cyan' | 'red' | 'slate' | 'flame';
   className?: string;
   dot?: boolean;
 }
@@ -15,25 +15,27 @@ export const Badge: React.FC<BadgeProps> = ({
   dot = false,
 }) => {
   const variantStyles = {
-    neon: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25',
-    amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25',
-    cyan: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/25',
-    red: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/25',
-    slate: 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700/80',
+    neon: 'bg-red-500/15 text-red-400 border-red-500/30',
+    flame: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+    amber: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+    cyan: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+    red: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
+    slate: 'bg-slate-800/80 text-slate-300 border-slate-700/80',
   };
 
   const dotColors = {
-    neon: 'bg-emerald-500',
+    neon: 'bg-red-500',
+    flame: 'bg-orange-500',
     amber: 'bg-amber-500',
     cyan: 'bg-cyan-500',
-    red: 'bg-red-500',
+    red: 'bg-rose-500',
     slate: 'bg-slate-400',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border backdrop-blur-sm tracking-wide',
+        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border backdrop-blur-sm tracking-wide',
         variantStyles[variant],
         className
       )}
