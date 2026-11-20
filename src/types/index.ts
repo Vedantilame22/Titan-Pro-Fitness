@@ -115,7 +115,7 @@ export type WorkoutSchedule = {
 export type AudioTrack = {
   id: string;
   title: string;
-  genre: 'Phonk' | 'EDM' | 'Gym Motivation' | 'Lo-Fi Chill';
+  genre: 'Phonk' | 'EDM' | 'Gym Motivation' | 'Lo-Fi Chill' | 'BGM / Mass Hits' | string;
   artist: string;
   streamUrl: string;
   duration?: string;
@@ -124,7 +124,7 @@ export type AudioTrack = {
 export type WorkoutStation = {
   id: string;
   name: string;
-  genre: 'Phonk' | 'EDM' | 'Hip-Hop / Heavy' | 'Lo-Fi Chill';
+  genre: 'Phonk' | 'EDM' | 'Hip-Hop / Heavy' | 'Lo-Fi Chill' | 'BGM / Mass Hits' | string;
   playlistId: string;
   description: string;
   badge: string;

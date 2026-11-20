@@ -10,13 +10,15 @@ import {
   ChevronDown,
   ChevronUp,
   Sparkles,
-  Plus,
   Disc3,
   Minimize2,
   Maximize2,
+  Flame,
+  Zap,
+  Dumbbell,
+  Music,
 } from 'lucide-react';
 import { useAudio } from '../../context/AudioContext';
-import { Badge } from '../common/Badge';
 
 export const FloatingAudioPlayer: React.FC = () => {
   const {
@@ -36,12 +38,10 @@ export const FloatingAudioPlayer: React.FC = () => {
     setVolume,
     toggleMute,
     switchStation,
-    loadCustomPlaylist,
     seekTo,
   } = useAudio();
 
   const [showStations, setShowStations] = useState(false);
-  const [customInput, setCustomInput] = useState('');
   const [isMinimized, setIsMinimized] = useState(false);
 
   const formatTime = (secs: number) => {
@@ -60,15 +60,22 @@ export const FloatingAudioPlayer: React.FC = () => {
     seekTo(pct);
   };
 
-  const handleAddCustom = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customInput.trim()) return;
-    loadCustomPlaylist(customInput);
-    setCustomInput('');
-    setShowStations(false);
+  const getStationIcon = (genre: string) => {
+    switch (genre) {
+      case 'BGM / Mass Hits':
+        return <Flame className="w-3.5 h-3.5 text-red-400" />;
+      case 'EDM':
+        return <Zap className="w-3.5 h-3.5 text-emerald-400" />;
+      case 'Hip-Hop / Heavy':
+        return <Dumbbell className="w-3.5 h-3.5 text-cyan-400" />;
+      case 'Lo-Fi Chill':
+        return <Radio className="w-3.5 h-3.5 text-amber-400" />;
+      default:
+        return <Music className="w-3.5 h-3.5 text-purple-400" />;
+    }
   };
 
-  // Minimized floating bubble
+  // Minimized floating pill
   if (isMinimized) {
     return (
       <div className="fixed bottom-5 right-5 z-50 pointer-events-auto">
@@ -94,13 +101,13 @@ export const FloatingAudioPlayer: React.FC = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-3 sm:px-6 pb-3 pointer-events-none">
       <div className="max-w-4xl mx-auto pointer-events-auto">
-        {/* Stations & Custom Playlist Drawer */}
+        {/* Stations Drawer - Clean single horizontal row */}
         {showStations && (
-          <div className="mb-2.5 p-5 bg-slate-900/95 dark:bg-[#0c0e14]/95 text-white border border-emerald-500/30 rounded-3xl shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-2">
+          <div className="mb-2.5 p-4 sm:p-5 bg-slate-900/95 dark:bg-[#0c0e14]/95 text-white border border-emerald-500/30 rounded-3xl shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-bottom-2">
             <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-xs text-slate-400">
               <span className="font-semibold text-white flex items-center gap-2">
                 <Radio className="w-4 h-4 text-emerald-400" />
-                Ad-Free Workout Stations ({stations.length})
+                Select Workout Station
               </span>
               <button
                 onClick={() => setShowStations(false)}
@@ -110,51 +117,42 @@ export const FloatingAudioPlayer: React.FC = () => {
               </button>
             </div>
 
-            {/* Station Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4 max-h-52 overflow-y-auto pr-1">
-              {stations.map((st) => (
-                <button
-                  key={st.id}
-                  onClick={() => {
-                    switchStation(st.id);
-                    setShowStations(false);
-                  }}
-                  className={`flex items-start justify-between p-3 rounded-2xl text-left text-xs transition-all cursor-pointer border ${
-                    st.id === currentStation.id
-                      ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
-                      : 'bg-slate-800/50 dark:bg-slate-900/50 border-slate-800 hover:border-slate-700 text-slate-300'
-                  }`}
-                >
-                  <div className="truncate mr-2">
-                    <p className="font-medium truncate text-white">{st.name}</p>
-                    <p className="text-[11px] font-normal text-slate-400 truncate mt-0.5">
-                      {st.description}
-                    </p>
-                  </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
-                    {st.badge}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {/* Stations arranged in ONE line properly across 4 columns */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {stations.map((st) => {
+                const isActive = st.id === currentStation.id;
+                return (
+                  <button
+                    key={st.id}
+                    onClick={() => {
+                      switchStation(st.id);
+                      setShowStations(false);
+                    }}
+                    className={`flex flex-col justify-between p-3.5 rounded-2xl text-left transition-all cursor-pointer border ${
+                      isActive
+                        ? 'bg-emerald-500/15 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-500/10 ring-1 ring-emerald-500/30'
+                        : 'bg-slate-800/40 dark:bg-slate-900/40 border-slate-800 hover:border-slate-700 text-slate-300 hover:bg-slate-800/70'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-1 mb-2">
+                      <div className="p-1.5 rounded-lg bg-black/40 border border-white/5">
+                        {getStationIcon(st.genre)}
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+                        {st.badge}
+                      </span>
+                    </div>
 
-            {/* Custom Playlist URL / ID Input Form */}
-            <form onSubmit={handleAddCustom} className="pt-3 border-t border-slate-800 flex items-center gap-2">
-              <input
-                type="text"
-                value={customInput}
-                onChange={(e) => setCustomInput(e.target.value)}
-                placeholder="Paste any YouTube Playlist URL or ID (e.g. PL...)..."
-                className="flex-1 px-3.5 py-2 text-xs bg-slate-800 dark:bg-black/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer flex-shrink-0"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Load Playlist</span>
-              </button>
-            </form>
+                    <div>
+                      <p className="font-semibold text-xs text-white truncate">{st.name}</p>
+                      <p className="text-[11px] text-slate-400 truncate mt-0.5 font-normal">
+                        {st.genre}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -210,7 +208,7 @@ export const FloatingAudioPlayer: React.FC = () => {
               </div>
             </div>
 
-            {/* Sound Wave Equalizer (Deluxe Style) */}
+            {/* Sound Wave Equalizer */}
             <div className="flex items-end gap-0.5 h-3.5 px-2">
               <span
                 className={`w-1 bg-emerald-400 rounded-full transition-all ${
@@ -289,9 +287,9 @@ export const FloatingAudioPlayer: React.FC = () => {
                 className="text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 {isMuted || volume === 0 ? (
-                  <VolumeX className="w-4 h-4 text-red-400" />
+                  <VolumeX className="w-3.5 h-3.5 text-red-400" />
                 ) : (
-                  <Volume2 className="w-4 h-4" />
+                  <Volume2 className="w-3.5 h-3.5" />
                 )}
               </button>
               <input
