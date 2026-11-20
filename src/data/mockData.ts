@@ -156,40 +156,7 @@ export const INITIAL_OFFERS: SpecialOffer[] = [
   },
 ];
 
-export const AUDIO_TRACKS: AudioTrack[] = [
-  {
-    id: 'track-1',
-    title: 'Gym Phonk Aggressive Drift',
-    artist: 'Nightcore Beats',
-    genre: 'Phonk',
-    streamUrl: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=phonk-energy-110023.mp3',
-    duration: '2:45',
-  },
-  {
-    id: 'track-2',
-    title: 'High-Energy Electro Workout Pump',
-    artist: 'Titan Beats',
-    genre: 'EDM',
-    streamUrl: 'https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=workout-motivation-electronic-124637.mp3',
-    duration: '3:10',
-  },
-  {
-    id: 'track-3',
-    title: 'Relentless Heavy Lift Beat',
-    artist: 'Iron Mindset',
-    genre: 'Gym Motivation',
-    streamUrl: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=epic-sport-energy-action-hybrid-rock-10331.mp3',
-    duration: '2:15',
-  },
-  {
-    id: 'track-4',
-    title: 'Post-Workout Stretch & Recovery',
-    artist: 'Aura Soundscapes',
-    genre: 'Lo-Fi Chill',
-    streamUrl: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3',
-    duration: '2:30',
-  },
-];
+export { WORKOUT_STATIONS, FALLBACK_TRACKS as AUDIO_TRACKS } from './musicStations';
 
 export const EXERCISE_TUTORIALS: Exercise[] = [
   {

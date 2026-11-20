@@ -120,3 +120,12 @@ export type AudioTrack = {
   streamUrl: string;
   duration?: string;
 };
+
+export type WorkoutStation = {
+  id: string;
+  name: string;
+  genre: 'Phonk' | 'EDM' | 'Hip-Hop / Heavy' | 'Lo-Fi Chill';
+  playlistId: string;
+  description: string;
+  badge: string;
+};
